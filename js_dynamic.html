@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        input[type='text']{
+            padding-top: 4px;
+            padding-left : 15px;
+            padding-right : 15px;
+        }
+
+        button{
+            color : white;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            padding-left: 15px;
+            padding-right: 15px;
+            width : 60px;
+            border: none;
+        }
+
+        button.add {
+            background-color: rgb(23, 79, 230);
+        }
+
+        button.delete {
+            background-color: rgb(66, 122, 10); 
+        }
+    </style>
+</head>
+<body>
+    <h1>Dynamic Web Page</h1>
+
+    
+    <input type="text" id="item" name="thing">
+    <button class="add" id="addButton">추가</button>
+    <button class="delete" id="deleteButton">삭제</button>
+
+    <ul id="list"></ul>
+
+    <script>
+        window.onload = function(){
+            const addButton = document.getElementById('addButton');
+            const deleteButton = document.getElementById('deleteButton');
+            const inputField = document.getElementById('item');
+            const itemList = document.getElementById('list');
+
+            addButton.onclick = function() {
+                const inputText = inputField.value;
+                if (inputText) {
+                    const items = inputText.split(',');
+                    items.forEach(item => {
+                        if (item) {
+                            const newItem = document.createElement('li');
+                            newItem.textContent = item;
+                            itemList.appendChild(newItem);
+                        }
+                    });
+                    inputField.value = ''; 
+                } else {
+                    alert('아이템을 입력하세요!');
+                }
+            };
+
+            deleteButton.onclick = function() {
+                const items = itemList.getElementsByTagName('li');
+                const lastItemIndex = items.length - 1;
+                if (lastItemIndex >= 0) {
+                    itemList.removeChild(items[lastItemIndex]); 
+                } else {
+                    alert('삭제할 아이템이 없습니다!');
+                }
+            };
+
+        };
+    </script>
+    
+</body>
+</html>
