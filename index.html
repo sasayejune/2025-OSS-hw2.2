@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONM - One New Man 카페</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="my.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="cafe-header">
+    <div class="container">
+      <a href="https://www.naver.com" target="_blank">
+        <img src="naver.jpg" alt="NAVER" class="naver-logo">
+      </a>
+      <div class="cafe-logo text-center py-4">
+        <img src="logo.jpg" alt="ONM 로고">
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-3 col-md-4 sidebar-col">
+        <div class="cafe-sidebar">
+          <!-- Cafe Info -->
+          <div class="cafe-info-card">
+            <div class="cafe-profile">
+              <img src="logo.jpg" alt="ONM" class="cafe-profile-img">
+              <p>한새사람 공식카페</p>
+              <div class="cafe-stats">
+                <div class="stat-item">
+                  <span class="stat-icon">👥</span>
+                  <span class="stat-text">61명</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-icon">🌍</span>
+                  <span class="stat-text">충청남도 금산군</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="cafe-actions">
+              <button class="btn btn-success btn-block mb-2" onclick="location.href='add.html'">
+                카페 글쓰기
+              </button>
+              <button class="btn btn-outline-secondary btn-block">
+                카페 채팅
+              </button>
+            </div>
+
+            <!-- Board Menu -->
+            <div class="board-menu">
+              <div class="board-title">
+                <span class="star-icon">⭐</span>
+                즐겨찾는 게시판
+              </div>
+              <ul class="board-list">
+                <li class="board-item active"><a href="#" class="board-link">전체글보기</a></li>
+                <li class="board-item"><a href="#" class="board-link">공지</a></li>
+                <li class="board-item"><a href="#" class="board-link">자유</a></li>
+                <li class="board-item"><a href="#" class="board-link">사진</a></li>
+                <li class="board-item"><a href="#" class="board-link">질문</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9 col-md-8 main-content">
+        <div class="content-header">
+          <h2 class="board-title-main">전체글보기</h2>
+          <div class="post-stats">0개의 글</div>
+
+          <!-- Search -->
+          <div class="content-controls">
+            <div class="search-controls d-flex">
+              <input type="text" class="form-control search-input" placeholder="검색어를 입력하세요">
+              <button class="btn btn-outline-secondary search-btn ms-2">검색</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Posts Table -->
+        <div class="posts-container">
+          <table class="table cafe-table">
+            <thead>
+              <tr>
+                <th>게시판</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회수</th>
+              </tr>
+            </thead>
+            <tbody id="postsTbody">
+              <!-- JS가 게시글을 채움 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentCategory = "전체글보기";
+
+    function renderPosts(category = "전체글보기", keyword = "") {
+      const tbody = document.getElementById("postsTbody");
+      tbody.innerHTML = "";
+
+      let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+      // 최신 글 순
+      posts.sort((a, b) => b.id - a.id);
+
+      // 카테고리 필터
+      if (category !== "전체글보기") {
+        posts = posts.filter(post => post.board === category);
+      }
+
+      // 검색어 필터
+      if (keyword.trim() !== "") {
+        const lowerKeyword = keyword.trim().toLowerCase();
+        posts = posts.filter(post =>
+          post.title.toLowerCase().includes(lowerKeyword) ||
+          post.author.toLowerCase().includes(lowerKeyword)
+        );
+      }
+
+      // 게시판 제목 + 글 개수 표시
+      document.querySelector(".board-title-main").textContent = category;
+      document.querySelector(".post-stats").textContent = `${posts.length}개의 글`;
+
+      posts.forEach(post => {
+        const tr = document.createElement("tr");
+        tr.classList.add("post-row");
+        tr.style.cursor = "pointer";
+
+        tr.addEventListener("mouseenter", () => tr.style.backgroundColor = "#f8f9fa");
+        tr.addEventListener("mouseleave", () => tr.style.backgroundColor = "");
+        tr.addEventListener("click", () => {
+          window.location.href = `view.html?id=${post.id}`;
+        });
+
+        tr.innerHTML = `
+      <td>${post.board}</td>
+      <td>${post.title} ${post.comments > 0 ? `<span class="text-danger">[${post.comments}]</span>` : ""}</td>
+      <td>${post.author}</td>
+      <td>${post.date}</td>
+      <td>${post.views}</td>
+    `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderPosts(currentCategory);
+
+      // 사이드바 카테고리 클릭 이벤트
+      document.querySelectorAll(".board-link").forEach(link => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          currentCategory = e.target.textContent.trim();
+          renderPosts(currentCategory, document.querySelector(".search-input").value);
+
+          document.querySelectorAll(".board-item").forEach(item => item.classList.remove("active"));
+          e.target.closest(".board-item").classList.add("active");
+        });
+      });
+
+      const searchInput = document.querySelector(".search-input");
+      const searchBtn = document.querySelector(".search-btn");
+
+      // 검색 버튼 클릭
+      searchBtn.addEventListener("click", () => {
+        renderPosts(currentCategory, searchInput.value);
+      });
+
+      // Enter키로 검색
+      searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          renderPosts(currentCategory, searchInput.value);
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>

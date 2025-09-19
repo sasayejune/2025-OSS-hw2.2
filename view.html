@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONM 카페 게시글</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="my.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="cafe-header">
+        <div class="container">
+            <a href="https://www.naver.com" target="_blank">
+                <img src="naver.jpg" alt="NAVER" class="naver-logo">
+            </a>
+
+            <div class="cafe-logo text-center py-3">
+                <img src="logo.jpg">
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-md-4 sidebar-col">
+                <div class="cafe-sidebar">
+                    <div class="cafe-info-card">
+                        <div class="cafe-profile">
+                            <img src="logo.jpg" alt="ONM" class="cafe-profile-img">
+                            <p>한새사람 공식카페</p>
+                            <div class="cafe-stats">
+                                <div class="stat-item">
+                                    <span class="stat-icon">👥</span>
+                                    <span class="stat-text">0명</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-icon">🌍</span>
+                                    <span class="stat-text">지역정보</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cafe-actions">
+                            <button class="btn btn-success btn-block mb-2" onclick="location.href='add.html'">
+                                카페 글쓰기
+                            </button>
+                            <button class="btn btn-outline-secondary btn-block">
+                                카페 채팅
+                            </button>
+                        </div>
+
+                        <div class="board-menu">
+                            <div class="board-title">
+                                <span class="star-icon">⭐</span>
+                                즐겨찾는 게시판
+                            </div>
+                            <ul class="board-list">
+                                <li class="board-item">
+                                    <a href="index.html" class="board-link">전체글보기</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item">
+                                    <a href="#" class="board-link">공지</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item active">
+                                    <a href="#" class="board-link">자유</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item">
+                                    <a href="#" class="board-link">사진</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item">
+                                    <a href="#" class="board-link">질문</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 col-md-8 main-content">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html" class="text-primary">ONM</a></li>
+                        <li class="breadcrumb-item"><a href="index.html" class="text-primary">전체글보기</a></li>
+                        <li class="breadcrumb-item active">게시글</li>
+                    </ol>
+                </nav>
+
+                <!-- Post Container -->
+                <div class="post-container">
+                    <!-- Post Header -->
+                    <div class="post-header">
+                        <div class="post-meta">
+                            <span class="board-tag"></span>
+                            <span class="post-number"></span>
+                        </div>
+                        <h1 class="post-title-main"></h1>
+
+                        <div class="post-info">
+                            <div class="author-info">
+                                <p>작성자</p>
+                                <div class="author-details">
+                                    <span class="author-name"></span>
+                                    <span class="author-icon">💚</span>
+                                </div>
+                            </div>
+                            <div class="post-stats-info">
+                                <span class="post-date"></span>
+                                <span class="post-views"></span>
+                                <span class="post-comments"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="post-content">
+                        <div class="content-body">
+                            <!-- JS에서 게시글 내용 렌더링 -->
+                        </div>
+
+                        <div class="attachments">
+                            <!-- JS에서 첨부파일 렌더링 -->
+                        </div>
+                    </div>
+
+                    <!-- Post Actions -->
+                    <div class="post-actions">
+                        <div class="author-actions">
+                            <!-- 수정 버튼 -->
+                            <button class="btn btn-primary btn-sm btn-edit">
+                                <i class="fas fa-edit"></i> 수정
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePost()">
+                                <i class="fas fa-trash"></i> 삭제
+                            </button>
+                        </div>
+                    </div>
+
+                    <script>
+                        // URL에서 ?id=숫자 가져오기
+                        function getPostId() {
+                            const params = new URLSearchParams(window.location.search);
+                            return parseInt(params.get('id'));
+                        }
+
+                        // localStorage에서 게시글 가져오기
+                        function getPostById(id) {
+                            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+                            return posts.find(post => post.id === id);
+                        }
+
+                        function renderPost() {
+                            const postId = getPostId();
+                            const post = getPostById(postId);
+
+                            if (!post) {
+                                alert('게시글을 찾을 수 없습니다.');
+                                window.location.href = 'index.html';
+                                return;
+                            }
+
+                            document.querySelector('.post-title-main').textContent = post.title;
+                            const boardTag = document.querySelector('.board-tag');
+                            boardTag.textContent = post.board;
+                            boardTag.className = `board-tag ${post.board.toLowerCase()}`;
+                            document.querySelector('.author-name').textContent = post.author;
+                            document.querySelector('.post-date').textContent = post.date;
+                            document.querySelector('.post-views').textContent = `조회 ${post.views}`;
+                            document.querySelector('.post-comments').textContent = `댓글 ${post.comments}`;
+                            document.querySelector('.content-body').innerHTML = post.content || '<p>내용이 없습니다.</p>';
+
+                            // 첨부파일 렌더링
+                            if (post.attachments && post.attachments.length > 0) {
+                                const attachmentsDiv = document.querySelector('.attachments');
+                                attachmentsDiv.innerHTML = '<h6>첨부파일</h6>';
+                                post.attachments.forEach(att => {
+                                    const div = document.createElement('div');
+                                    div.className = 'attachment-item';
+                                    div.innerHTML = `
+                <i class="fas fa-file-image"></i>
+                <a href="${att.url}" class="attachment-link">${att.name}</a>
+                <span class="attachment-size">(${att.size})</span>
+            `;
+                                    attachmentsDiv.appendChild(div);
+                                });
+                            }
+
+                            // 수정 버튼 클릭 시 현재 글 id 전달
+                            const editBtn = document.querySelector('.btn-edit');
+                            editBtn.onclick = function () {
+                                window.location.href = `edit.html?id=${post.id}`;
+                            };
+                        }
+
+                        // 게시글 삭제 기능
+                        function deletePost() {
+                            if (!confirm("정말로 이 게시글을 삭제하시겠습니까?")) return;
+
+                            const postId = getPostId();
+                            let posts = JSON.parse(localStorage.getItem('posts')) || [];
+                            posts = posts.filter(post => post.id !== postId);
+                            localStorage.setItem('posts', JSON.stringify(posts));
+
+                            alert("게시글이 삭제되었습니다.");
+                            window.location.href = 'index.html';
+                        }
+
+                        document.addEventListener('DOMContentLoaded', renderPost);
+                    </script>

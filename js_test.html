@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn"> 눌러보세요. </button>
+    <p id="text"> 기본 텍스트 </p>
+</body>
+
+<script>
+    const bin = document.getElementById("btn");
+    const text = document.getElementById("text");
+
+    btn.addEventListener("click", function () {
+        text.innerText = "오우";
+    });
+</script>
+</html>

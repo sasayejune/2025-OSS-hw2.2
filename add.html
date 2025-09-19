@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글쓰기 - ONM 카페</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="my.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="cafe-header">
+        <div class="container">
+            <a href="https://www.naver.com" target="_blank">
+                <img src="naver.jpg" alt="NAVER" class="naver-logo">
+            </a>
+            <div class="cafe-logo text-center py-3">
+                <img src="logo.jpg" alt="ONM">
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-md-4 sidebar-col">
+                <div class="cafe-sidebar">
+                    <div class="cafe-info-card">
+                        <div class="cafe-profile">
+                            <img src="logo.jpg" alt="ONM" class="cafe-profile-img">
+              <p>한새사람 공식카페</p>
+                            <div class="cafe-stats">
+                                <div class="stat-item">
+                                    <span class="stat-icon">👥</span>
+                                    <span class="stat-text">0명</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-icon">🌍</span>
+                                    <span class="stat-text">지역정보</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cafe-actions">
+                            <button class="btn btn-success btn-block mb-2" disabled>
+                                카페 글쓰기
+                            </button>
+                            <button class="btn btn-outline-secondary btn-block">
+                                카페 채팅
+                            </button>
+                        </div>
+
+                        <div class="board-menu">
+                            <div class="board-title">
+                                <span class="star-icon">⭐</span>
+                                즐겨찾는 게시판
+                            </div>
+                            <ul class="board-list">
+                                <li class="board-item">
+                                    <a href="index.html" class="board-link">전체글보기</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item">
+                                    <a href="#" class="board-link">공지</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item active">
+                                    <a href="#" class="board-link">자유</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item">
+                                    <a href="#" class="board-link">사진</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                                <li class="board-item">
+                                    <a href="#" class="board-link">질문</a>
+                                    <span class="post-count">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 col-md-8 main-content">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html" class="text-primary">ONM</a></li>
+                        <li class="breadcrumb-item"><a href="index.html" class="text-primary">전체글보기</a></li>
+                        <li class="breadcrumb-item active">글쓰기</li>
+                    </ol>
+                </nav>
+
+                <!-- Post Write Form -->
+                <div class="post-container">
+                    <form id="postForm">
+                        <!-- 제목 -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">제목</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+
+                        <!-- 작성자 -->
+                        <div class="mb-3">
+                            <label for="author" class="form-label">작성자</label>
+                            <input type="text" class="form-control" id="author" name="author" required>
+                        </div>
+
+                        <!-- 게시판 선택 -->
+                        <!-- 게시판 선택 -->
+                        <div class="mb-3">
+                            <label for="board" class="form-label">게시판</label>
+                            <select id="board" name="board" class="form-select" required>
+                                <option value="" selected disabled>게시판을 선택해주세요</option>
+                                <option value="자유">자유게시판</option>
+                                <option value="공지">공지사항</option>
+                                <option value="사진">사진게시판</option>
+                                <option value="질문">질문과답변</option>
+                            </select>
+                        </div>
+
+
+                        <!-- 내용 -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">내용</label>
+                            <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
+                        </div>
+
+                        <!-- 첨부파일 -->
+                        <div class="mb-3">
+                            <label for="attachments" class="form-label">첨부파일</label>
+                            <input type="file" class="form-control" id="attachments" name="attachments" multiple>
+                        </div>
+
+                        <!-- 버튼 -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">등록</button>
+                            <a href="index.html" class="btn btn-secondary">취소</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 글 저장하기
+        document.getElementById('postForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+            const newPost = {
+                id: Date.now(),
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                board: document.getElementById('board').value,
+                date: new Date().toLocaleString(),
+                views: 0,
+                comments: 0,
+                content: document.getElementById('content').value,
+                attachments: []
+            };
+
+            posts.push(newPost);
+            localStorage.setItem('posts', JSON.stringify(posts));
+
+            alert('게시글이 등록되었습니다.');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+
+</html>
